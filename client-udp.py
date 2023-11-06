@@ -52,26 +52,31 @@ def socket_configuration(server_host_name, server_port):
 def start_conection(sock, sock_addr):
     print("Conectando ao server...")
 
-    try:
-        sock.sendto(CONECT_MSG.encode(), sock_addr)
-    except Exception as e:
-        print("Erro - Falha ao enviar mensagem de conexao:", e)
-        sys.exit(1)
+    n_pckts = 0
+    while (n_pckts == 0):
+        try:
+            sock.sendto(CONECT_MSG.encode(), sock_addr)
+
+            sock.settimeout(0.1)
+            message_bytes, _ = sock.recvfrom(BUFFER_SIZE)
+            n_pckts = pickle.loads(message_bytes)
+        except socket.timeout:
+            pass
+        except Exception as e:
+            print("Erro - Falha ao enviar mensagem de conexao:", e)
+            sys.exit(1)
 
     print("Conexao iniciada")
 
+    return n_pckts
+
 
 def main(sock, sock_addr):
-    start_conection(sock, sock_addr)
-
-    sock.settimeout(None)
-    
-    message_bytes, _ = sock.recvfrom(BUFFER_SIZE)
-    n_msg = pickle.loads(message_bytes) 
+    n_pckts = start_conection(sock, sock_addr)
 
     # inicia variaveis de recebimento de mensagens
     previous_number = -1
-    arrived = [0] * n_msg
+    arrived = [0] * n_pckts
     disordered = list()
 
     # coloca timeout de 1 segundo
@@ -81,22 +86,27 @@ def main(sock, sock_addr):
     while (True):
         try:
             message_bytes, _ = sock.recvfrom(BUFFER_SIZE)
-            received_number = pickle.loads(message_bytes) 
+            received_number, message = pickle.loads(message_bytes) 
 
             if (received_number < previous_number):
                 disordered.append(received_number)
             
             # registra que a mensagem chegou
-            arrived[received_number] = 1
+            arrived[received_number-1] = 1
 
             previous_number = received_number
 
-            print("recebi a mensagem: ", received_number)
+            print("recebi a mensagem: ", received_number, " ", message)
         
         except socket.timeout:
             break
 
     print("Mensagens recebidas! Cliente encerrado!")
+    print("Quantidade de mensagens recebidas:", sum(arrived))
+    print("Quantidade de mensagens perdidas:", n_pckts - sum(arrived))
+    print("Quantidade de mensagens fora de ordem:", len(disordered))
+    print("Mensagens fora de ordem:", disordered)
+
 
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ def check_arguments():
         sys.exit(1)
 
     port = int(sys.argv[1])
-    delay = int(sys.argv[2])
+    delay = float(sys.argv[2])
 
     return port, delay
 
@@ -66,12 +66,10 @@ def start_server(port, delay):
     return sock, delay
 
 
-def wait_for_clients(clients_list):
+def wait_for_clients(sock, clients_list, qtd_messages):
     """
     Espera a conexao de um client.
     """
-
-    print("Esperando conexao...")
 
     while (True):
         # espera mensagem de conexao
@@ -82,12 +80,16 @@ def wait_for_clients(clients_list):
             if msg.decode() == CONECT_MSG:
                 print(f"Conexao estabelecida - cliente: {client_addr}")
                 clients_list.append(client_addr)
+
+                #manda o numero de mensagens
+                message_bytes = pickle.dumps(qtd_messages)
+                stream(sock, [client_addr], message_bytes)
             else:
                 print("Erro - Mensagem de conexao invalida")
 
         except socket.timeout:
-            # minimo de 3 clientes
-            if (len(clients_list) >= 3):
+            # minimo de 1 clientes
+            if (len(clients_list) >= 1):
                 break
 
         except Exception as e:
@@ -110,19 +112,23 @@ def stream(sock, clients_list, message):
 def main(sock, delay):
     clients_list = list()
 
+    qtd_pckts = 50
+
     #espera conexao
-    wait_for_clients(clients_list)
+    print("Esperando conexao...")
+    wait_for_clients(sock, clients_list, qtd_pckts)
 
-    #manda o numero de mensagens
-    message_bytes = pickle.dumps(10)
-    stream(sock, clients_list, message_bytes)
+    for i in range(1, qtd_pckts+1):
+        package = (i, 'a'*i)
 
-    for i in range(0, 10):
-        message_bytes = pickle.dumps(i)
-        
+        # envia mensagem
+        message_bytes = pickle.dumps(package)
         stream(sock, clients_list, message_bytes)
 
         time.sleep(delay)
+
+        #espera conexao
+        wait_for_clients(sock, clients_list, qtd_pckts)
 
     print("Mensagens enviadas aos clientes! Terminando programa...")
 
