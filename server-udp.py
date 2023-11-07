@@ -2,6 +2,7 @@ import sys
 import time
 import socket
 import pickle
+import pandas as pd
 
 BUFFER_SIZE = 1024
 CONECT_MSG  = "request_connection"
@@ -63,6 +64,7 @@ def start_server(port, delay):
     print(f"IP: {host_ip}")
     print(f"Porta: {port}")
 
+
     return sock, delay
 
 
@@ -112,14 +114,16 @@ def stream(sock, clients_list, message):
 def main(sock, delay):
     clients_list = list()
 
-    qtd_pckts = 50
+    qtd_pckts = 1
 
     #espera conexao
     print("Esperando conexao...")
     wait_for_clients(sock, clients_list, qtd_pckts)
 
+    data = pd.read_csv("./dados_caravelas.csv")
+    data_all = pickle.dumps(data)
     for i in range(1, qtd_pckts+1):
-        package = (i, 'a'*i)
+        package = (i, data_all)
 
         # envia mensagem
         message_bytes = pickle.dumps(package)
