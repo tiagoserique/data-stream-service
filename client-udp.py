@@ -83,7 +83,7 @@ def main(sock, sock_addr):
     # coloca timeout de 1 segundo
     sock.settimeout(1)
 
-    dfs = []
+    dfs = pd.DataFrame()
 
     # recebe as mensagens
     while (True):
@@ -91,8 +91,8 @@ def main(sock, sock_addr):
             message_bytes, _ = sock.recvfrom(BUFFER_SIZE)
             #received_number, message = pickle.loads(message_bytes) 
             message = pickle.loads(message_bytes) 
-            received_number = message[0]
-            dfs.append(message)
+            received_number = message.index.values.astype(int)[0]
+            dfs = pd.concat([dfs,message])
 
             if (received_number < previous_number):
                 disordered.append(received_number)
@@ -107,8 +107,7 @@ def main(sock, sock_addr):
         except socket.timeout:
             break
 
-    data = pd.concat(dfs)
-    print(data)
+    print(dfs.count())
     print("Mensagens recebidas! Cliente encerrado!")
     print("Quantidade de mensagens recebidas:", sum(arrived))
     print("Quantidade de mensagens perdidas:", n_pckts - sum(arrived))
