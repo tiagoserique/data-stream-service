@@ -114,19 +114,19 @@ def stream(sock, clients_list, message):
 def main(sock, delay):
     clients_list = list()
 
-    qtd_pckts = 1
+    qtd_pckts = 50
 
     #espera conexao
     print("Esperando conexao...")
     wait_for_clients(sock, clients_list, qtd_pckts)
 
     data = pd.read_csv("./dados_caravelas.csv")
-    data_all = pickle.dumps(data)
-    for i in range(1, qtd_pckts+1):
-        package = (i, data_all)
+    #data_all = pickle.dumps(data)
+    for i in range(0, qtd_pckts):
+        #package = (data.iloc[i,0], data.iloc[i,1:4])
 
         # envia mensagem
-        message_bytes = pickle.dumps(package)
+        message_bytes = pickle.dumps(data.iloc[[i]])#package)
         stream(sock, clients_list, message_bytes)
 
         time.sleep(delay)
