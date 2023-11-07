@@ -6,6 +6,16 @@ import pandas as pd
 
 BUFFER_SIZE = 1024
 CONECT_MSG  = "request_connection"
+LOG_FILE = "log-execucao-server.txt"
+
+
+def logging(message, mode="a"):
+    try:
+        with open(LOG_FILE, mode) as arquivo:
+            arquivo.write(message+"\n")
+    except FileNotFoundError:
+        with open(LOG_FILE, "w+") as arquivo:
+            arquivo.write(message)
 
 
 def check_arguments():
@@ -35,6 +45,8 @@ def start_server(port, delay):
     """
 
     print("Iniciando server...")
+    logging("Iniciando server...", "w")
+    
 
     #configura o socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -46,7 +58,7 @@ def start_server(port, delay):
     # pega o endereco IP a partir do nome do server
     host_ip = socket.gethostbyname(host_name)
     if (host_ip == 0):
-        print("Erro - Host desconhecido:", host_name)
+        logging("Erro - Host desconhecido:", host_name)
         sys.exit(1)
 
     # monta endereco do socket
@@ -63,6 +75,10 @@ def start_server(port, delay):
     print(f"Server {host_name} iniciado")
     print(f"IP: {host_ip}")
     print(f"Porta: {port}")
+
+    logging(f"Server {host_name} iniciado")
+    logging(f"IP: {host_ip}")
+    logging(f"Porta: {port}")
 
 
     return sock, delay
@@ -81,13 +97,14 @@ def wait_for_clients(sock, clients_list, qtd_messages):
             # verifica se a mensagem recebida e de conexao
             if msg.decode() == CONECT_MSG:
                 print(f"Conexao estabelecida - cliente: {client_addr}")
+                logging(f"Conexao estabelecida - cliente: {client_addr}")
                 clients_list.append(client_addr)
 
                 #manda o numero de mensagens
                 message_bytes = pickle.dumps(qtd_messages)
                 stream(sock, [client_addr], message_bytes)
             else:
-                print("Erro - Mensagem de conexao invalida")
+                logging("Erro - Mensagem de conexao invalida")
 
         except socket.timeout:
             # minimo de 1 clientes
@@ -95,7 +112,7 @@ def wait_for_clients(sock, clients_list, qtd_messages):
                 break
 
         except Exception as e:
-            print("Erro - Falha ao receber mensagem de conexao:", e)
+            logging("Erro - Falha ao receber mensagem de conexao:", e)
             sys.exit(1)
 
 
@@ -108,7 +125,7 @@ def stream(sock, clients_list, message):
         try:
             sock.sendto(message, client)
         except Exception as e:
-            print(f"Erro - Falha ao enviar mensagem de conexao: {e}")
+            logging(f"Erro - Falha ao enviar mensagem de conexao: {e}")
             
 
 def main(sock, delay):
@@ -118,7 +135,10 @@ def main(sock, delay):
 
     #espera conexao
     print("Esperando conexao...")
+    logging("Esperando conexao...")
     wait_for_clients(sock, clients_list, qtd_pckts)
+
+    print(f"Enviando mensagens...")    
 
     data = pd.read_pickle("./dados_caravelas.pkl")
     #data_all = pickle.dumps(data)
@@ -126,6 +146,7 @@ def main(sock, delay):
         #package = (data.iloc[i,0], data.iloc[i,1:4])
 
         # envia mensagem
+        logging(f"Enviando mensagem: {data.iloc[[i]]}")
         message_bytes = pickle.dumps(data.iloc[[i]])#package)
         stream(sock, clients_list, message_bytes)
 
@@ -135,6 +156,7 @@ def main(sock, delay):
         wait_for_clients(sock, clients_list, qtd_pckts)
 
     print("Mensagens enviadas aos clientes! Terminando programa...")
+    logging("Mensagens enviadas aos clientes! Terminando programa...")
 
 if __name__ == "__main__":
     port, delay = check_arguments()

@@ -2,9 +2,20 @@ import sys
 import pickle
 import socket
 import pandas as pd
+import datetime
 
 BUFFER_SIZE = 1024
 CONECT_MSG  = "request_connection"
+client_file = "log-execucao-client-" + str(datetime.datetime.now()) + ".txt"
+
+
+def logging(message, mode="a"):    
+    try:
+        with open(client_file, mode) as arquivo:
+            arquivo.write(message+"\n")
+    except FileNotFoundError:
+        with open(client_file, "w+") as arquivo:
+            arquivo.write(message)
 
 
 def check_arguments():
@@ -46,12 +57,14 @@ def socket_configuration(server_host_name, server_port):
     sock_addr = (server_host_ip, server_port)
 
     print("Socket configurado")
+    logging("Socket configurado", "w")
 
     return sock, sock_addr
 
 
 def start_conection(sock, sock_addr):
     print("Conectando ao server...")
+    logging("Conectando ao server...")
 
     n_pckts = 0
     while (n_pckts == 0):
@@ -68,6 +81,7 @@ def start_conection(sock, sock_addr):
             sys.exit(1)
 
     print("Conexao iniciada")
+    logging("Conexao iniciada")
 
     return n_pckts
 
@@ -102,17 +116,23 @@ def main(sock, sock_addr):
 
             previous_number = received_number
 
-            print("recebi a mensagem: ", received_number, " ", message)
+            print(f"recebi a mensagem:  {received_number} || {message}")
+            logging(f"recebi a mensagem: {received_number} || {message}")
         
         except socket.timeout:
             break
 
-    print(dfs.count())
+    print(str(dfs.count()))
     print("Mensagens recebidas! Cliente encerrado!")
     print("Quantidade de mensagens recebidas:", sum(arrived))
     print("Quantidade de mensagens perdidas:", n_pckts - sum(arrived))
     print("Quantidade de mensagens fora de ordem:", len(disordered))
-    print("Mensagens fora de ordem:", disordered)
+
+    logging(str(dfs.count()))
+    logging("Mensagens recebidas! Cliente encerrado!")
+    logging(f"Quantidade de mensagens recebidas: {sum(arrived)}")
+    logging(f"Quantidade de mensagens perdidas: {n_pckts - sum(arrived)}")
+    logging(f"Quantidade de mensagens fora de ordem: {len(disordered)}")
 
 
 
