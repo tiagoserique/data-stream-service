@@ -56,7 +56,6 @@ def start_server(port, delay):
     print("Iniciando server...")
     logging("Iniciando server...", "w")
     
-
     #configura o socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, BUFFER_SIZE)

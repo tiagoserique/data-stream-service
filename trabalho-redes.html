@@ -131,28 +131,37 @@
                 <li>
                     <b>check_arguments:</b>
                     Checa se os argumentos da execução do servidor foram passados corretamente na linha de comando e retorna os valores
-                    passados para realizar a configuração do socket. Espera-se receber o número da porta onde o socket vai operar e
-                    o intervalo de tempo entre cada envio de mensagem. Se houverem erros nesses parâmetros é apresentada uma mensagem de 
-                    erro para o usuário mostrando como deve ser realizada a entrada dos dados.
+                    passados para realizar a configuração do socket. Espera-se receber o número da porta onde o socket vai operar, considerando 
+                    valores acima de 1023 pois essas portas são reservadas, eo intervalo de tempo entre cada envio de mensagem. Se houverem 
+                    erros nesses parâmetros é apresentada uma mensagem de erro para o usuário mostrando como deve ser realizada a entrada 
+                    dos dados.
                 </li>
                 <li>
                     <b>start_server:</b>
-                    Inicia o socket do server e retorna o socket, o endereco do socket e o 
-                    intervalo de tempo entre cada mensagem.
+                    Realiza a configuração do socket, onde é especificado que vai ser usado IPv4 para os endereços, UDP para o protocolo, e 
+                    o tamanho do buffer para recebimento de mensagens. Após isso, definimos o timeout do socket, o delay entre cada envio de 
+                    mensagem, e à partir do nome da máquina, pegamos o endereço ip do servidor e então, utilizando a porta passada, é montado 
+                    o endereço do socket usado para fazer a transmissão dos dados.
                 </li>
                 <li>
                     <b>wait_for_clients:</b>
-                    Espera a conexao de um client.
+                    Aqui o servidor espera uma requisição de conexão de no mínimo 1 cliente, senão não inicia a transmissão dos dados. É 
+                    esperado que o cliente mande um mensagem de conexão para o servidor, desse modo o servidor adiciona o endereço do cliente 
+                    a lista de clientes e inicia a transmitir. Conforme a transmissão for ocorrendo, o servidor espera receber novos clientes, 
+                    bastando adicioná-los na lista de clientes e eles receberão os dados que serão transmitidos à partir da conexão, considerando
+                    os dados pré conexão como perdidos.
                 </li>
                 <li>
                     <b>stream:</b>
-                    Envia a mensagem para todos os clientes da lista.
+                    Esse é o método responsável por mandar as mensagens, onde ocorre a iteração entre cada cliente da lista de clientes e,
+                    para cada um deles, é enviado o pacote atual.
                 </li>
             </ul>
 
             <p>
                 O cliente foi implementado também em Python, e é responsável por receber os dados do servidor, e realizar
-                alguma operação sobre eles, no caso deste trabalho, armazenar os dados binários em um novo dataframe e executar a operação count(), que contabiliza a quantidade de valores por coluna do dataframe. O cliente é implementado com os seguintes métodos:
+                alguma operação sobre eles, no caso deste trabalho, armazenar os dados binários em um novo dataframe e executar a operação 
+                count(), que contabiliza a quantidade de valores por coluna do dataframe. O cliente é implementado com os seguintes métodos:
             </p>
 
             <ul>
@@ -163,22 +172,27 @@
                 </li>
                 <li>
                     <b>check_arguments:</b>
-                    Checa se os argumentos foram passados corretamente e retorna os valores
-                    passados. Caso contrario, imprime uma mensagem de erro e encerra o programa.
+                    Checa se os argumentos da execução do cliente foram passados corretamente na linha de comando e retorna os valores
+                    passados para realizar a configuração do socket. Espera-se receber o nome da servidor e o número da porta onde o 
+                    socket vai operar, considerando valores acima de 1023 pois essas portas são reservadas. Se houverem erros nesses 
+                    parâmetros é apresentada uma mensagem de erro para o usuário mostrando como deve ser realizada a entrada dos dados.
                 </li>
                 <li>
                     <b>socket_configuration:</b>
-                    Configura o socket do client e retorna o socket e o endereco do socket.
+                    É realizada a mesma configuração de socket do servidor, e à partir dos dados de entrada da linha de comando é montado
+                    o endereço do servidor.
                 </li>
                 <li>
                     <b>start_conection:</b>
-                    Inicia a conexao com o server e retorna o numero de pacotes a serem recebidos.
+                    Aqui o cliente começa a mandar as requisições de conexão com o servidor, esperando uma mensagem de retorno que confirme
+                    a conexão, senão receber nada, continua tentando realizar a conexão.
                 </li>
             </ul>
 
-
             <p>
-	    	Ambos servidor e cliente foram desenvolvidos para transmitir apenas um stream de dados, referente a um único dataframe que é transmitido linha por linha pela rede, utilizando o indíce do dataframe como número de sequência para as mensagens.
+	    	    Ambos servidor e cliente foram desenvolvidos para transmitir apenas um stream de dados, referente a um único dataframe 
+                que é transmitido linha por linha pela rede, utilizando o indíce do dataframe como número de sequência para as mensagens.
+                A main de cada um possui um loop que manda ou recebe os dados, respectivamente.
             </p> 
 
             <h4>Execução</h4>
