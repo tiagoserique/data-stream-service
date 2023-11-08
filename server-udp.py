@@ -150,7 +150,8 @@ def stream(sock, clients_list, message):
 def main(sock, delay):
     clients_list = list()
 
-    qtd_pckts = 409
+    data = pd.read_pickle("./dados_litoral_texto_coordenadas.pkl")
+    qtd_pckts = len(data)
 
     #espera conexao
     print("Esperando conexao...")
@@ -159,15 +160,12 @@ def main(sock, delay):
 
     print(f"Enviando mensagens...")    
 
-    data = pd.read_pickle("./dados_caravelas.pkl")
-    #data_all = pickle.dumps(data)
     for i in range(0, qtd_pckts):
-        #package = (data.iloc[i,0], data.iloc[i,1:4])
 
         # envia mensagem
         logging(f"Enviando mensagem: {data.iloc[[i]]}")
         print(f"Enviando mensagem: {data.iloc[[i]]}")
-        message_bytes = pickle.dumps(data.iloc[[i]])#package)
+        message_bytes = pickle.dumps(data.iloc[[i]])
         stream(sock, clients_list, message_bytes)
 
         time.sleep(delay)
