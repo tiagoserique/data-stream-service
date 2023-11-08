@@ -166,6 +166,7 @@ def main(sock, delay):
 
         # envia mensagem
         logging(f"Enviando mensagem: {data.iloc[[i]]}")
+        print(f"Enviando mensagem: {data.iloc[[i]]}")
         message_bytes = pickle.dumps(data.iloc[[i]])#package)
         stream(sock, clients_list, message_bytes)
 

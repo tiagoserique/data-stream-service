@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Trabalho Prático - Redes II</title>
 
 
@@ -125,13 +125,15 @@
             <ul>
                 <li>
                     <b>logging:</b> 
-                    Escreve uma mensagem especifica em um arquivo de log de nome "log-execucao-server-timestamp.txt", onde cada 
-                    execucao adiciona o timestamp ao nome do log.
+                    Escreve uma mensagem especifica em um arquivo de texto de nome "log-execucao-server-timestamp.txt", onde cada 
+                    execucao adiciona o timestamp ao nome do log, facilitando em navegar entre as execuções.
                 </li>
                 <li>
                     <b>check_arguments:</b>
-                    Checa se os argumentos foram passados corretamente e retorna os valores
-                    passados. Caso contrario, imprime uma mensagem de erro e encerra o programa.
+                    Checa se os argumentos da execução do servidor foram passados corretamente na linha de comando e retorna os valores
+                    passados para realizar a configuração do socket. Espera-se receber o número da porta onde o socket vai operar e
+                    o intervalo de tempo entre cada envio de mensagem. Se houverem erros nesses parâmetros é apresentada uma mensagem de 
+                    erro para o usuário mostrando como deve ser realizada a entrada dos dados.
                 </li>
                 <li>
                     <b>start_server:</b>
