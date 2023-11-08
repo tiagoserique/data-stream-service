@@ -4,12 +4,20 @@ import socket
 import pandas as pd
 import datetime
 
+
 BUFFER_SIZE = 1024
 CONECT_MSG  = "request_connection"
 client_file = "log-execucao-client-" + str(datetime.datetime.now()) + ".txt"
 
 
-def logging(message, mode="a"):    
+def logging(message, mode="a"):
+    """
+    Escreve a mensagem no arquivo de log.
+
+    Retorna:
+        message (str): mensagem a ser escrita no arquivo de log
+        mode (str): modo de escrita no arquivo de log
+    """
     try:
         with open(client_file, mode) as arquivo:
             arquivo.write(message+"\n")
@@ -41,6 +49,10 @@ def check_arguments():
 def socket_configuration(server_host_name, server_port):
     """
     Configura o socket do client e retorna o socket e o endereco do socket.
+
+    Retorna:
+        sock (socket): socket do client
+        sock_addr (tuple): endereco do socket
     """
 
     # pega o endereco IP do server a partir do nome
@@ -63,6 +75,13 @@ def socket_configuration(server_host_name, server_port):
 
 
 def start_conection(sock, sock_addr):
+    """
+    Inicia a conexao com o server e retorna o numero de pacotes a serem recebidos.
+    
+    Retorna:
+        n_pckts (int): numero de pacotes a serem recebidos
+    """
+
     print("Conectando ao server...")
     logging("Conectando ao server...")
 

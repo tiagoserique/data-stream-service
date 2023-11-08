@@ -1,0 +1,242 @@
+<!-- saved from url=(0056)https://www.inf.ufpr.br/elias/redes/tpRedesII2023-2.html -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>Trabalho Prático - Redes II</title>
+
+
+    <meta name="Generator" content="LaTeX2HTML v2K.1beta">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+
+    <link rel="next" href="https://www.inf.ufpr.br/elias/redes/node1.html">
+    <style type="text/css">
+        .vue-notification-group {
+            display: block;
+            position: fixed;
+            z-index: 5000
+        }
+
+        .vue-notification-wrapper {
+            display: block;
+            overflow: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0
+        }
+
+        .notification-title {
+            font-weight: 600
+        }
+
+        .vue-notification-template {
+            background: #fff
+        }
+
+        .vue-notification,
+        .vue-notification-template {
+            display: block;
+            box-sizing: border-box;
+            text-align: left
+        }
+
+        .vue-notification {
+            font-size: 12px;
+            padding: 10px;
+            margin: 0 5px 5px;
+            color: #fff;
+            background: #44a4fc;
+            border-left: 5px solid #187fe7
+        }
+
+        .vue-notification.warn {
+            background: #ffb648;
+            border-left-color: #f48a06
+        }
+
+        .vue-notification.error {
+            background: #e54d42;
+            border-left-color: #b82e24
+        }
+
+        .vue-notification.success {
+            background: #68cd86;
+            border-left-color: #42a85f
+        }
+
+        .vn-fade-enter-active,
+        .vn-fade-leave-active,
+        .vn-fade-move {
+            transition: all .5s
+        }
+
+        .vn-fade-enter,
+        .vn-fade-leave-to {
+            opacity: 0
+        }
+    </style>
+</head>
+
+<body>
+    <div style="max-width: 50%; padding-left: 25%;">
+        <div id="brk_yuan"></div>
+
+        <p></p>
+        <div align="CENTER">
+            <b>Universidade Federal do Paraná
+                <br>
+                Departamento de Informática
+                <br>
+                Bacharelado em Ciência da Computação
+                <br>
+                Alunos Henrique Margotte e Tiago Serique</b>
+        </div>
+
+        <p></p>
+        <div align="CENTER">
+            <font size="3">
+                <b>Trabalho Prático de Redes de Computadores II - Turma 2023/2</b>
+            </font>
+        </div>
+
+        <p></p>
+        <div align="CENTER">
+            <font size="3"><b>Um Serviço de Stream de Dados</b></font>
+        </div>
+
+        <div>
+            <p></p>
+            
+            <h4>Introdução</h4>
+            <p>Neste trabalho foi implementado um servidor de streams de dados referentes à localização de 
+                <a href="images/caravela-portuguesa.jpg">caravela-portuguesas</a>, (inserir explicacao do que eh). 
+                A ideia deste trabalho é simular de forma simplificada serviços de streaming de dados, como Netflix e 
+                Spotify. Da mesma forma, o servidor implementado faz o stream da localização de caravelas, e os clientes 
+                podem se conectar ao servidor para receber os dados e realizar operações sobre eles.
+            </p>
+
+            <h4>Desenvolvimento</h4>
+            <p>
+                O servidor foi implementado em Python, e é responsável por receber os dados de um arquivo de
+                csv com as informações das caravela-portuguesas, e enviar para os clientes que se conectarem a ele. O
+                servidor é implementado com os seguintes métodos:
+            </p>
+
+            <ul>
+                <li>
+                    <b>logging:</b> 
+                    Escreve uma mensagem especifica em um arquivo de log de nome "log-execucao-server-timestamp.txt", onde cada 
+                    execucao adiciona o timestamp ao nome do log.
+                </li>
+                <li>
+                    <b>check_arguments:</b>
+                    Checa se os argumentos foram passados corretamente e retorna os valores
+                    passados. Caso contrario, imprime uma mensagem de erro e encerra o programa.
+                </li>
+                <li>
+                    <b>start_server:</b>
+                    Inicia o socket do server e retorna o socket, o endereco do socket e o 
+                    intervalo de tempo entre cada mensagem.
+                </li>
+                <li>
+                    <b>wait_for_clients:</b>
+                    Espera a conexao de um client.
+                </li>
+                <li>
+                    <b>stream:</b>
+                    Envia a mensagem para todos os clientes da lista.
+                </li>
+            </ul>
+
+            <p>
+                O cliente foi implementado também em Python, e é responsável por receber os dados do servidor, e realizar
+                alguma operação sobre eles, no caso deste trabalho, (...). O cliente é implementado com os seguintes métodos:
+            </p>
+
+            <ul>
+                <li>
+                    <b>logging:</b> 
+                    Escreve uma mensagem especifica em um arquivo de log de nome "log-execucao-server-timestamp.txt", onde cada 
+                    execucao adiciona o timestamp ao nome do log.
+                </li>
+                <li>
+                    <b>check_arguments:</b>
+                    Checa se os argumentos foram passados corretamente e retorna os valores
+                    passados. Caso contrario, imprime uma mensagem de erro e encerra o programa.
+                </li>
+                <li>
+                    <b>socket_configuration:</b>
+                    Configura o socket do client e retorna o socket e o endereco do socket.
+                </li>
+                <li>
+                    <b>start_conection:</b>
+                    Inicia a conexao com o server e retorna o numero de pacotes a serem recebidos.
+                </li>
+            </ul>
+
+
+            <!-- <p>
+                A função <b>client</b> é implementada em um loop infinito, e a cada iteração do loop, o
+                cliente recebe um pacote do servidor, e realiza a operação sobre os dados recebidos. O
+                cliente recebe os dados em um buffer, e os dados são separados em campos, que são
+                armazenados em variáveis. Após receber os dados, o cliente realiza a operação sobre eles,
+                e imprime o resultado na tela.
+            </p> -->
+
+            <h4>Execução</h4>
+
+            <p>
+                Para executar o servidor, basta executar o seguinte comando:
+                <b>python3 server-udp.py [port] [delay]</b>
+            </p>
+
+            <p>
+                Para executar o cliente, basta executar o seguinte comando:
+                <b>python3 client-udp.py [hostname] [port]</b>
+            </p>
+
+            <h4>Estatísticas</h4>
+
+            <p>
+                resultados aqui
+            </p>
+
+            <h4>Conclusão</h4>
+
+            <p>
+                concluir aqui
+            </p>
+
+            <h4>Código fonte</h4>
+
+            <p>
+                <a href="http://www.inf.ufpr.br/redes/server-udp.txt">Código fonte do servidor</a>
+                &nbsp;
+                <a href="http://www.inf.ufpr.br/redes/cliente-udp.txt">Código fonte do cliente</a>
+            </p>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <hr>
+    <center>
+        <p>
+            <font face="futura" size="3" color="blue">
+                <a href="http://www.inf.ufpr.br/hm19">Aluno Henrique Margotte</a>
+                &nbsp;
+                &nbsp;
+                <a href="http://www.inf.ufpr.br/tsv19">Aluno Tiago Serique</a>
+                &nbsp;
+                &nbsp;
+                <a href="http://www.inf.ufpr.br/">Departamento de Informática</a>
+                &nbsp;
+                &nbsp;
+                <a href="http://www.ufpr.br/">UFPR</a>
+            </font>
+        </p>
+    </center>
+    <hr>
+</body>
+
+</html>

@@ -3,13 +3,22 @@ import time
 import socket
 import pickle
 import pandas as pd
+import datetime
+
 
 BUFFER_SIZE = 1024
 CONECT_MSG  = "request_connection"
-LOG_FILE = "log-execucao-server.txt"
+LOG_FILE = "log-execucao-server-" + str(datetime.datetime.now()) + ".txt"
 
 
 def logging(message, mode="a"):
+    """
+    Escreve a mensagem no arquivo de log.
+
+    Retorna:
+        message (str): mensagem a ser escrita no arquivo de log
+        mode (str): modo de escrita no arquivo de log
+    """
     try:
         with open(LOG_FILE, mode) as arquivo:
             arquivo.write(message+"\n")
@@ -87,6 +96,11 @@ def start_server(port, delay):
 def wait_for_clients(sock, clients_list, qtd_messages):
     """
     Espera a conexao de um client.
+
+    Retorna:
+        sock (socket): socket do server
+        clients_list (list): lista de clientes conectados
+        qtd_messages (int): numero de mensagens a serem enviadas
     """
 
     while (True):
@@ -119,6 +133,11 @@ def wait_for_clients(sock, clients_list, qtd_messages):
 def stream(sock, clients_list, message):
     """
     Envia a mensagem para todos os clientes da lista.
+
+    Retorna:
+        sock (socket): socket do server
+        clients_list (list): lista de clientes conectados
+        message (bytes): mensagem a ser enviada
     """
 
     for client in clients_list:
