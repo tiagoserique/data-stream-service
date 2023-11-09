@@ -122,7 +122,7 @@ def main(sock, sock_addr):
     while (True):
         try:
             message_bytes, _ = sock.recvfrom(BUFFER_SIZE)
-            #received_number, message = pickle.loads(message_bytes) 
+            
             message = pickle.loads(message_bytes) 
             received_number = message.index.values.astype(int)[0]
             dfs = pd.concat([dfs,message])

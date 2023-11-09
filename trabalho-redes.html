@@ -78,7 +78,7 @@
 </head>
 
 <body>
-    <div style="max-width: 50%; padding-left: 25%;">
+    <div style="max-width: 70%; padding-left: 17%;">
         <div id="brk_yuan"></div>
 
         <p></p>
@@ -108,9 +108,8 @@
             <p></p>
             
             <h4>Introdução</h4>
-            <p>Neste trabalho foi implementado um servidor de streams de dados referentes à aparecimentos de 
-                <a href="images/caravela-portuguesa.jpg">caravelas-portuguesas</a> no litoral brasileiro, contendo dados da latitude, 
-                longitude e timestamp do aparecimento. 
+            <p>Neste trabalho foi implementado um servidor de streams de dados referentes a aparecimentos de 
+                <a href="images/caravela-portuguesa.jpg">caravelas-portuguesas</a> no litoral brasileiro, contendo dados da latitude, longitude e timestamp do aparecimento. 
                 A ideia deste trabalho é simular de forma simplificada serviços de streaming de dados, como Netflix e 
                 Spotify. Da mesma forma, o servidor implementado faz o stream da localização de caravelas, e os clientes 
                 podem se conectar ao servidor para receber os dados e realizar operações sobre eles.
@@ -119,8 +118,7 @@
             <h4>Desenvolvimento</h4>
             <p>
                 O servidor foi implementado em Python, e é responsável por receber os dados de um arquivo
-                .pkl com as informações das caravelas-portuguesas, armazenados em um dataframe da biblioteca Pandas, e enviar para os 
-                clientes que se conectarem a ele.  O
+                .pkl com as informações das caravelas-portuguesas, armazenadas em um dataframe da biblioteca Pandas, e enviar para os clientes que se conectarem a ele.  O
                 servidor é implementado com os seguintes métodos:
             </p>
 
@@ -134,23 +132,23 @@
                     <b>check_arguments:</b>
                     Checa se os argumentos da execução do servidor foram passados corretamente na linha de comando e retorna os valores
                     passados para realizar a configuração do socket. Espera-se receber o número da porta onde o socket vai operar, considerando 
-                    valores acima de 1023 pois essas portas são reservadas, eo intervalo de tempo entre cada envio de mensagem. Se houverem 
-                    erros nesses parâmetros é apresentada uma mensagem de erro para o usuário mostrando como deve ser realizada a entrada 
+                    valores acima de 1023 pois essas portas são reservadas, e o intervalo de tempo entre cada envio de mensagem. Se houverem 
+                    erros nesses parâmetros, é apresentada uma mensagem de erro para o usuário mostrando como deve ser realizada a entrada 
                     dos dados.
                 </li>
                 <li>
                     <b>start_server:</b>
-                    Realiza a configuração do socket, onde é especificado que vai ser usado IPv4 para os endereços, UDP para o protocolo, e 
+                    Realiza a configuração do socket, onde é especificado que vai ser usado IPv4 para os endereços, UDP para o protocolo e 
                     o tamanho do buffer para recebimento de mensagens. Após isso, definimos o timeout do socket, o delay entre cada envio de 
-                    mensagem, e à partir do nome da máquina, pegamos o endereço ip do servidor e então, utilizando a porta passada, é montado 
+                    mensagem, e, a partir do nome da máquina, pegamos o endereço IP do servidor. Utilizando a porta passada, é montado 
                     o endereço do socket usado para fazer a transmissão dos dados.
                 </li>
                 <li>
                     <b>wait_for_clients:</b>
                     Aqui o servidor espera uma requisição de conexão de no mínimo 1 cliente, senão não inicia a transmissão dos dados. É 
                     esperado que o cliente mande um mensagem de conexão para o servidor, desse modo o servidor adiciona o endereço do cliente 
-                    a lista de clientes e inicia a transmitir. Conforme a transmissão for ocorrendo, o servidor espera receber novos clientes, 
-                    bastando adicioná-los na lista de clientes e eles receberão os dados que serão transmitidos à partir da conexão, considerando
+                    a lista de clientes e começa a transmitir. Conforme a transmissão for ocorrendo, o servidor espera receber novos clientes, 
+                    bastando adicioná-los na lista de clientes e eles receberão os dados que serão transmitidos a partir da conexão, considerando
                     os dados pré conexão como perdidos.
                 </li>
                 <li>
@@ -170,7 +168,7 @@
                 <li>
                     <b>logging:</b> 
                     Escreve uma mensagem especifica em um arquivo de log de nome "log-execucao-server-timestamp.txt", onde cada 
-                    execucao adiciona o timestamp ao nome do log.
+                    execução adiciona o timestamp ao nome do log.
                 </li>
                 <li>
                     <b>check_arguments:</b>
@@ -181,7 +179,7 @@
                 </li>
                 <li>
                     <b>socket_configuration:</b>
-                    É realizada a mesma configuração de socket do servidor, e à partir dos dados de entrada da linha de comando é montado
+                    É realizada a mesma configuração de socket do servidor, e a partir dos dados de entrada da linha de comando, é montado
                     o endereço do servidor.
                 </li>
                 <li>
@@ -194,7 +192,11 @@
             <p>
 	    	    Ambos servidor e cliente foram desenvolvidos para transmitir apenas um stream de dados, referente a um único dataframe 
                 que é transmitido linha por linha pela rede, utilizando o indíce do dataframe como número de sequência para as mensagens.
-                A main de cada um possui um loop que manda ou recebe os dados, respectivamente.
+                A main de cada um possui um loop que manda ou recebe os dados, respectivamente, com o server encerrando quando enviar todos as linhas do dataframe e o cliente encerrando ao atingir seu timeout, de 1 segundo, ou seja, ficar mais de 1 segundo sem receber nenhuma mensagem.
+            </p>
+
+            <p>
+                São utilizadas as seguintes bibliotecas de Python 3: sys, time, socket, pickle, pandas e datetime.
             </p> 
 
             <h4>Execução</h4>
@@ -209,6 +211,10 @@
                 <b>python3 client-udp.py [hostname] [port]</b>
             </p>
 
+            <p>
+                É necessário ainda indicar no código do servidor o arquivo .pkl a ser transmitido, assim como o caminho até ele. Nos testes realizados, foi utilizado o arquivo dados_litoral_texto_coordenadas.pkl, localizado no diretório corrente, mas espera-se que possa ser utilizado qualquer dataset que não ultrapasse os limites de tamanho.
+
+
             <h4>Estatísticas</h4>
 
             <p>
@@ -218,9 +224,13 @@
             <h4>Código fonte</h4>
 
             <p>
-                <a href="http://www.inf.ufpr.br/redes/server-udp.txt">Código fonte do servidor</a>
+                <a href="http://www.inf.ufpr.br/tsv19/redes/src/server-udp.py.txt">Código fonte do servidor</a>
                 &nbsp;
-                <a href="http://www.inf.ufpr.br/redes/cliente-udp.txt">Código fonte do cliente</a>
+                <a href="http://www.inf.ufpr.br/tsv19/redes/src/client-udp.py.txt">Código fonte do cliente</a>
+                &nbsp;
+                <a href="http://www.inf.ufpr.br/tsv19/redes/logs">Logs</a>
+                &nbsp;
+                <a href="http://www.inf.ufpr.br/tsv19/redes/src/dados_litoral_texto_coordenadas.pkl">Arquivo de entrada .pkl para execução</a>
             </p>
         </div>
     </div>
